@@ -1,6 +1,6 @@
 #pragma once
+#include <GL/glew.h>
 #include <SDL.h>
-#include <glew.h>
 #include <SDL_opengl.h>
 #include <stdio.h>
 #include "TriangleRenderer.h"

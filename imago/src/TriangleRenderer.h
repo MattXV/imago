@@ -1,13 +1,13 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <SDL.h>
-#include <glew.h>
 #include <SDL_opengl.h>
 #include <stdio.h>
 #include "Utils.h"
 #include "Camera.h"
 #include <math.h>
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 

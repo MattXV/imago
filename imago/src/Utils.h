@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <glew.h>
+#include <GL/glew.h>
 
 
 namespace Utils {

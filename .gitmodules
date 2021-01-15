@@ -1,0 +1,3 @@
+[submodule "imago/externals/assimp"]
+	path = imago/externals/assimp
+	url = https://github.com/assimp/assimp
