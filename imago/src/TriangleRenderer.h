@@ -4,15 +4,19 @@
 #include <glew.h>
 #include <SDL_opengl.h>
 #include <stdio.h>
-#include <string>
+#include "Utils.h"
+#include "Camera.h"
+#include <math.h>
+#include <gtc/type_ptr.hpp>
+
 
 
 static GLfloat vertexData[] = {
-	-0.5f, 0.0f,
-	0.0f, -0.5f,
-	0.0f, 0.0f,
-	0.5f, 0.0f,
-	0.0f, 0.5f
+	-0.5f,  0.0f, 1.0f,
+	 0.0f, -0.5f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+   	 0.5f,  0.0f, 1.0f,
+	 0.0f,  0.5f,  1.0f
 };
 static GLuint indexData[] = {
 	0, 1, 2,
@@ -20,18 +24,11 @@ static GLuint indexData[] = {
 };
 
 
-static void GLCheckError() {
-	while (GLenum error = glGetError()) {
-		printf("[OpenGL Error]: %d \n", error);
-	}
-}
 
 class TriangleRenderer
 {
 public:
-
-	
-	TriangleRenderer();
+	TriangleRenderer(Camera* camera);
 	virtual ~TriangleRenderer();
 
 	void init();
@@ -39,13 +36,21 @@ public:
 	void draw();
 	void clean();
 
-
 private:
+	Camera* camera;
 
+	// OpenGL locations
 	GLuint programId = 0;
-	GLint vertexPos2DLocation = -1;
+	GLint vertexPositionLocation = -1;
 	GLuint vertexArrayObject = 0;
 	GLuint indexArrayObject = 0;
+	int modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation, u_Colour = - 1;
 
+	// Utils
+	float pi;
+
+	// Test
+	float increment = 0.0005f;
+	float x = 0.0f;
 };
 

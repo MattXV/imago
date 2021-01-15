@@ -19,6 +19,8 @@ public:
 	void clean();
 
 private:
+	Camera* camera;
+
 	SDL_Window* window;
 	SDL_GLContext glContext;
 	TriangleRenderer* triangleRenderer;

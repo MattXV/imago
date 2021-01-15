@@ -2,13 +2,15 @@
 
 GameLoop::GameLoop() :
 	glContext(),
-	window(nullptr)
+	window(nullptr),
+	camera(new Camera())
 {
-	triangleRenderer = new TriangleRenderer();
+	triangleRenderer = new TriangleRenderer(camera);
 };
 
 GameLoop::~GameLoop() {
 	delete triangleRenderer;
+	delete camera;
 };
 
 void GameLoop::init() {
@@ -73,7 +75,6 @@ void GameLoop::draw() {
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	triangleRenderer->draw();
-
 
 	// Show window
 	SDL_GL_SwapWindow(window);
