@@ -1,7 +1,7 @@
 #include "Utils.h"
 
 
-std::string Utils::readFile(const std::string& shaderPath) {
+const std::string Utils::readFile(const std::string& shaderPath) {
 	std::ifstream shaderFile(shaderPath);
 	std::stringstream shaderSource;
 

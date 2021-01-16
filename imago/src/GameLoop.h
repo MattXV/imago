@@ -4,6 +4,9 @@
 #include <SDL_opengl.h>
 #include <stdio.h>
 #include "TriangleRenderer.h"
+#include "ModelRenderer.h"
+#include "Model.h"
+#include <stdio.h>
 
 
 class GameLoop
@@ -23,6 +26,10 @@ private:
 
 	SDL_Window* window;
 	SDL_GLContext glContext;
-	TriangleRenderer* triangleRenderer;
+	ModelRenderer* modelRenderer;
+	Model* model;
+
+	// Testing
+	float x = 0.0f, increment = 0.00005f;
 };
 

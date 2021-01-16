@@ -8,7 +8,7 @@
 
 
 namespace Utils {
-	std::string readFile(const std::string& shaderPath);
+	const std::string readFile(const std::string& shaderPath);
 	void glCheckError();
 }
 

@@ -22,7 +22,7 @@ Model::Model(std::string modelFile) :
 	for (int i = 0; i < scene->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[i];
 		std::vector<float> vertices;
-		std::vector<float> indices;
+		std::vector<unsigned int> indices;
 
 		for (int j = 0; j < mesh->mNumVertices; j++) {
 			// Extract vertices from the mesh object.
@@ -38,10 +38,9 @@ Model::Model(std::string modelFile) :
 			if (face->mNumIndices != 3) {
 				continue; // Only triangular faces!
 			}
-
-			for (int v = 0; i < 3; v++) {
-				indices.push_back(face->mIndices[v]);
-			}
+			indices.push_back((unsigned int)face->mIndices[0]);
+			indices.push_back((unsigned int)face->mIndices[1]);
+			indices.push_back((unsigned int)face->mIndices[2]);
 		}
 		// Move data to OpenGL buffers
 		unsigned int vbo, ibo;
@@ -49,15 +48,13 @@ Model::Model(std::string modelFile) :
 		glGenBuffers(1, &ibo);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 		vertexBufferObjects.push_back(vbo);
 		indexBufferObjects.push_back(ibo);
-		indexCounts.push_back(indices.size());
+		indexCounts.push_back((int)indices.size());
 	}
-
-
 
 }

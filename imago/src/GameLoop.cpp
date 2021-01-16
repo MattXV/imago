@@ -3,15 +3,17 @@
 GameLoop::GameLoop() :
 	glContext(),
 	window(nullptr),
-	camera(new Camera())
+	camera(new Camera()),
+	modelRenderer(new ModelRenderer(camera)),
+	model(nullptr)
 {
-	triangleRenderer = new TriangleRenderer(camera);
-};
+}
 
 GameLoop::~GameLoop() {
-	delete triangleRenderer;
 	delete camera;
-};
+	delete modelRenderer;
+	delete model;
+}
 
 void GameLoop::init() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -50,8 +52,11 @@ void GameLoop::init() {
 	if (SDL_GL_SetSwapInterval(1) < 0)
 		printf("Unable to set Vsync! \n %s \n", SDL_GetError());
 
-	triangleRenderer->init();
 	printf("SDL correctly initialised :D stonks \n");
+	modelRenderer->init();
+	printf("Model renderer correctly initialised :D stonks \n");
+
+	model = new Model("models/monkey.obj");
 }
 
 bool GameLoop::handleInput() {
@@ -74,12 +79,22 @@ void GameLoop::draw() {
 	glClearColor(0.392f, 0.384f, 0.929f, 1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	triangleRenderer->draw();
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	if (model) {
+		x += increment;
+		x = std::int8_t(x) % 360 ? 0.0f : x;
+
+		model->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+		model->setRotation(glm::vec3(0.0f, x, 0.0f));
+		modelRenderer->drawModel(model);
+	}
 
 	// Show window
 	SDL_GL_SwapWindow(window);
 }
 
 void GameLoop::clean() {
-	triangleRenderer->clean();
+	modelRenderer->clean();
 }
