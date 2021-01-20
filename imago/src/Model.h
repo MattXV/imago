@@ -7,10 +7,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+
 #include <iostream>
 #include <vector>
 #include <string>
 
+#include "Texture.h"
 #include "Utils.h"
 
 class Model
@@ -18,10 +20,11 @@ class Model
 	// add model renderer as a friend
 public:
 	Model(std::string modelFile);
-	virtual ~Model() = default;
+	~Model();
 
 	const std::vector<unsigned int>& getVbos() { return vertexBufferObjects; }
 	const std::vector<unsigned int>& getIbos() { return indexBufferObjects; }
+	const std::vector<unsigned int>& getUvos() { return uvBufferObjects; }
 	const std::vector<int>& getIndexCounts() { return indexCounts; }
 
 	// Getters/setters
@@ -34,18 +37,24 @@ public:
 	glm::vec3& getScale() { return scale; }
 	void setScale(glm::vec3 newScale) { scale = newScale; }
 
-
+	//Texture
+	void setTexture(Texture* t) { texture = t; }
+	Texture* getTexture() { return texture; }
+	unsigned int getTextureId() { return texture->getTextureId(); }
 private:	
+	// Texture
+
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 rotation = glm::vec3(90.0f, 45.0f, 0.0f);
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	
 	std::string file;
+	bool hasUVCoords = false;
 
-	std::vector<unsigned int> vertexBufferObjects, indexBufferObjects;
+	std::vector<unsigned int> vertexBufferObjects, indexBufferObjects, uvBufferObjects;
 	std::vector<int> indexCounts;
-
-
+	Texture* texture;
+	
 };
 

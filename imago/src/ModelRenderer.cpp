@@ -56,14 +56,20 @@ void ModelRenderer::init() {
 		printf("[ERROR] Model Renderer: Validation failed! \n");
 		return;
 	}
+
 	// Retrieve attribute and uniform locations
+	// Vertex Shader
 	vertexPositionLocation = glGetAttribLocation(programId, "vertexPosition");
-	u_Colour = glGetUniformLocation(programId, "u_Colour");
 	modelMatrixLocation = glGetUniformLocation(programId, "modelMatrix");
 	viewMatrixLocation = glGetUniformLocation(programId, "viewMatrix");
 	projectionMatrixLocation = glGetUniformLocation(programId, "projectionMatrix");
-	
-	//printf("vertexPos: %d, modelMatrix: %d, viewMatrix: %d, projectionMatrix: %d", vertexPositionLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation);
+	uvLocation = glGetAttribLocation(programId, "uv");
+
+	// Fragment Shader
+	textureSamplerLocation = glGetUniformLocation(programId, "textureSampler");
+	// Blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void ModelRenderer::clean() {
@@ -75,16 +81,15 @@ void ModelRenderer::drawModel(Model* model) {
 	glUseProgram(programId);
 
 	// Create and manipulate the Model Matrix
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	glm::mat4 modelMatrix = glm::mat4(1.0f); // Identity matrix
 	modelMatrix = glm::rotate(modelMatrix, model->getRotation().x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
 	modelMatrix = glm::rotate(modelMatrix, model->getRotation().y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
 	modelMatrix = glm::rotate(modelMatrix, model->getRotation().z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelMatrix = glm::translate(modelMatrix, model->getTranslation());
 	modelMatrix = glm::scale(modelMatrix, model->getScale());
-	camera->updateViewMatrix();
+	//camera->updateViewMatrix();
 
 	// Set Uniforms/Attributes
-	glUniform4f(u_Colour, 0.2f, 0.2f, 0.0f, 1.0f);
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
@@ -92,13 +97,26 @@ void ModelRenderer::drawModel(Model* model) {
 	// Assign data to VBO and IBO
 	std::vector<unsigned int> vbos = model->getVbos();
 	std::vector<unsigned int> ibos = model->getIbos();
+	std::vector<unsigned int> uvos = model->getUvos();
 	std::vector<int> counts = model->getIndexCounts();
 	
 	for (int i = 0; i < vbos.size(); ++i) {
+		// Vertex positions
 		glEnableVertexAttribArray(vertexPositionLocation);
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
-		glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_TRUE, 3 * sizeof(float), (void*)0);
+		
+		//UV coordinates
+		glEnableVertexAttribArray(uvLocation);
+		glBindBuffer(GL_ARRAY_BUFFER, uvos[i]);
+		glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(textureSamplerLocation, 0);
+		glBindTexture(GL_TEXTURE_2D, model->getTextureId());
+
+		// Indices
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibos[i]);
+
 		glDrawElements(GL_TRIANGLES, counts[i], GL_UNSIGNED_INT, nullptr);
 	}
 

@@ -1,3 +1,6 @@
 [submodule "imago/externals/assimp"]
 	path = imago/externals/assimp
 	url = https://github.com/assimp/assimp
+[submodule "imago/externals/opencv"]
+	path = imago/externals/opencv
+	url = https://github.com/opencv/opencv

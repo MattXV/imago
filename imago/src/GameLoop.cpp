@@ -3,8 +3,7 @@
 GameLoop::GameLoop() :
 	glContext(),
 	window(nullptr),
-	camera(new Camera()),
-	modelRenderer(new ModelRenderer(camera)),
+	modelRenderer(nullptr),
 	model(nullptr)
 {
 }
@@ -52,11 +51,19 @@ void GameLoop::init() {
 	if (SDL_GL_SetSwapInterval(1) < 0)
 		printf("Unable to set Vsync! \n %s \n", SDL_GetError());
 
-	printf("SDL correctly initialised :D stonks \n");
+	// Initialise resources
+	camera = new FPSCamera(window);
+	modelRenderer = new ModelRenderer(camera);
 	modelRenderer->init();
-	printf("Model renderer correctly initialised :D stonks \n");
+	
+	
+	texture = new Texture("models/DMTConference_Mesh_BWall.png");
+	model = new Model("models/DMTConference_Mesh_BWall.fbx");
+	model->setTexture(texture);
 
-	model = new Model("models/monkey.obj");
+
+	Utils::glCheckError();
+	printf("Resources initialised Correctly! \n");
 }
 
 bool GameLoop::handleInput() {
@@ -66,21 +73,25 @@ bool GameLoop::handleInput() {
 		if (e.type == SDL_QUIT) {
 			return false;
 		}
+		if (e.type == SDL_KEYDOWN) {
+			if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+				return false;
+		}
+		camera->handleInput(e);
 	}
-
 	return true;
 }
 
 void GameLoop::update() {
-
+	camera->update();
 }
 
 void GameLoop::draw() {
-	glClearColor(0.392f, 0.384f, 0.929f, 1.0f);
+	glClearColor(0.0f, 0.384f, 0.929f, 0.32f);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	GLCALL(glEnable(GL_CULL_FACE));
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if (model) {
 		x += increment;
@@ -90,7 +101,6 @@ void GameLoop::draw() {
 		model->setRotation(glm::vec3(0.0f, x, 0.0f));
 		modelRenderer->drawModel(model);
 	}
-
 	// Show window
 	SDL_GL_SwapWindow(window);
 }

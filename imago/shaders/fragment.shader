@@ -1,10 +1,11 @@
 #version 330 core
 
-layout(location = 0) out vec4 fragmentColor;
+out vec4 fragmentColor;
+in vec2 out_uv;
 
-uniform vec4 u_Colour;
+uniform sampler2D textureSampler;
 
 void main() 
 { 
-	fragmentColor = u_Colour;
+	fragmentColor = texture(textureSampler, out_uv).rbga;
 }

@@ -17,7 +17,7 @@ public:
 	glm::vec3 getLookAt() { return lookAt; }
 	void updateViewMatrix();
 
-private:
+protected:
 
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
@@ -25,4 +25,3 @@ private:
 	glm::vec3 position;
 	glm::vec3 lookAt;
 };
-

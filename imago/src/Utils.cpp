@@ -23,3 +23,25 @@ void Utils::glCheckError() {
 		printf("[OpenGL Error]: %d \n", error);
 	}
 }
+
+void Utils::glClearError()
+{
+	while (glGetError() != GL_NO_ERROR);
+}
+
+bool Utils::glLogError(const char* function, const char* file, int line)
+{
+	while (GLenum error = glGetError()) {
+		printf("[OPENGL ERROR]: %d \n", error);
+		printf("Function: %s, in file %s, in line %d", function, file, line);
+		return false;
+	}
+	return true;
+}
+
+std::string Utils::StemPath(std::string path)
+{
+	const rsize_t pos = path.find_last_of('.');
+	std::string stem = path.substr(0, pos);
+	return stem;
+}

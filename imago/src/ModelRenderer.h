@@ -25,14 +25,12 @@ private:
 	unsigned int programId = -1;
 	int vertexPositionLocation = -1;
 
-	// Uniforms
-	unsigned int modelMatrixLocation = -1, viewMatrixLocation =-1, projectionMatrixLocation = -1, u_Colour = -1;
-	
+	// Shader parameter locations
+	unsigned int modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation, uvLocation;
+	int textureSamplerLocation = -1;
 
 	Camera* camera;
 	// Utils
 	float pi;
-
-
 };
 

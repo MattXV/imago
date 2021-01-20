@@ -3,10 +3,11 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <stdio.h>
+
 #include "TriangleRenderer.h"
 #include "ModelRenderer.h"
 #include "Model.h"
-#include <stdio.h>
+#include "FPSCamera.h"
 
 
 class GameLoop
@@ -22,12 +23,15 @@ public:
 	void clean();
 
 private:
-	Camera* camera;
-
+	// Application 
 	SDL_Window* window;
 	SDL_GLContext glContext;
+
+	// Scene 
+	FPSCamera* camera;
 	ModelRenderer* modelRenderer;
 	Model* model;
+	Texture* texture;
 
 	// Testing
 	float x = 0.0f, increment = 0.00005f;
