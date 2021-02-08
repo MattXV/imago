@@ -17,7 +17,6 @@
 
 class Model
 {
-	// add model renderer as a friend
 public:
 	Model(std::string modelFile);
 	~Model();
@@ -26,8 +25,6 @@ public:
 	const std::vector<unsigned int>& getIbos() { return indexBufferObjects; }
 	const std::vector<unsigned int>& getUvos() { return uvBufferObjects; }
 	const std::vector<int>& getIndexCounts() { return indexCounts; }
-
-	// Getters/setters
 	glm::vec3& getPosition() { return position; }
 	void setPosition(glm::vec3 newPosition) { position = newPosition; }
 	glm::vec3& getTranslation() { return translation; };
@@ -42,7 +39,6 @@ public:
 	Texture* getTexture() { return texture; }
 	unsigned int getTextureId() { return texture->getTextureId(); }
 private:	
-	// Texture
 
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -51,7 +47,7 @@ private:
 	
 	std::string file;
 	bool hasUVCoords = false;
-
+	unsigned int vertexArrayObject = 0;
 	std::vector<unsigned int> vertexBufferObjects, indexBufferObjects, uvBufferObjects;
 	std::vector<int> indexCounts;
 	Texture* texture;

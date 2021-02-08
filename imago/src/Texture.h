@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 #include <GL/glew.h>
-
+#include <SDL_image.h>
 #include "externals/stb_image/stb_image.h"
+#include <opencv2/opencv.hpp>
 #include <algorithm>
 #include "Utils.h"
 
@@ -16,7 +17,7 @@ class Texture
 {
 public:
 	Texture(std::string file);
-	Texture();
+	Texture(const int textureHeight = 1024, const int textureWidth = 1024);
 	virtual ~Texture() = default;
 
 	unsigned int getTextureId() { return textureId; }
@@ -27,7 +28,6 @@ private:
 	// Image properties
 	std::string file;
 	void* textureData = nullptr; // Pointer to raw image data;
-	int dataType = -1;			 // Details the pointer above.
 	int width = -1, height = -1, channels = -1;
 	int imageFormat = -1;
 

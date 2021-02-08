@@ -4,20 +4,24 @@
 #include <glm/glm.hpp>
 #include <math.h>
 #include "Camera.h"
+#include "ApplicationSettings.h"
 
-#define UP 0
-#define DOWN 1
 
 class FPSCamera : public Camera {
 public:
+	const static int down = 1, up = 0, left = 2, right = 3;
 	FPSCamera(SDL_Window* window);
 	virtual ~FPSCamera() = default;
 
 	void update();
 	void handleInput(SDL_Event& evt);
+
+
 private:
-	bool keyStates[2] = { false, false };
+	float multiplier = 0.3f;
+	bool keyStates[4] = { false };
 	float yaw = 0.0f, pitch = 0.0f;
 	int oldMouseX = 0, oldMouseY = 0;
 	SDL_Window* window;
+	bool movementEnabled = false;
 };

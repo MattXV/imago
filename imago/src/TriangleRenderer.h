@@ -11,18 +11,14 @@
 
 
 
-static GLfloat vertexData[] = {
-	-0.5f,  0.0f, 1.0f,
-	 0.0f, -0.5f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-   	 0.5f,  0.0f, 1.0f,
-	 0.0f,  0.5f,  1.0f
+static float vertexData[] = {
+	-0.5f,  0.0f,
+	 0.5f,  0.0f,
+	 0.0f,  0.5f
 };
-static GLuint indexData[] = {
-	0, 1, 2,
-	2, 3, 4
+static unsigned int indexData[] = {
+	0, 1, 2
 };
-
 
 
 class TriangleRenderer
@@ -40,10 +36,9 @@ private:
 	Camera* camera;
 
 	// OpenGL locations
-	GLuint programId = 0;
-	GLint vertexPositionLocation = -1;
-	GLuint vertexArrayObject = 0;
-	GLuint indexArrayObject = 0;
+	unsigned int programId = 0;
+	int vertexPositionLocation = -1;
+	unsigned int vertexBufferObject = 0, indexBufferObject = 0, vertexArrayObject = 0;
 	int modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation, u_Colour = - 1;
 
 	// Utils
@@ -53,4 +48,3 @@ private:
 	float increment = 0.0005f;
 	float x = 0.0f;
 };
-

@@ -8,6 +8,9 @@
 #include "ModelRenderer.h"
 #include "Model.h"
 #include "FPSCamera.h"
+#include "Terrain.h"
+#include "ApplicationSettings.h"
+#include "RenderUtils.h"
 
 
 class GameLoop
@@ -32,6 +35,11 @@ private:
 	ModelRenderer* modelRenderer;
 	Model* model;
 	Texture* texture;
+	Terrain* terrain;
+	Texture* terrainTexure;
+	TriangleRenderer* triangleRenderer;
+	Texture* skydomeTexture;
+	SkyDome* skydome;
 
 	// Testing
 	float x = 0.0f, increment = 0.00005f;

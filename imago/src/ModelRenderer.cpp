@@ -14,7 +14,7 @@ void ModelRenderer::init() {
 	programId = glCreateProgram();
 	Utils::glCheckError();
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	std::string shaderString = Utils::readFile("shaders/vertex.shader");
+	std::string shaderString = Utils::readFile("resources/shaders/vertex.shader");
 	const char* shaderSource = shaderString.c_str();
 	glShaderSource(vertexShader, 1, &shaderSource, nullptr);
 	glCompileShader(vertexShader);
@@ -29,7 +29,7 @@ void ModelRenderer::init() {
 
 	// Fragment Shader
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	shaderString = Utils::readFile("shaders/fragment.shader");
+	shaderString = Utils::readFile("resources/shaders/fragment.shader");
 	shaderSource = shaderString.c_str();
 	glShaderSource(fragmentShader, 1, &shaderSource, nullptr);
 	glCompileShader(fragmentShader);
@@ -87,7 +87,6 @@ void ModelRenderer::drawModel(Model* model) {
 	modelMatrix = glm::rotate(modelMatrix, model->getRotation().z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelMatrix = glm::translate(modelMatrix, model->getTranslation());
 	modelMatrix = glm::scale(modelMatrix, model->getScale());
-	//camera->updateViewMatrix();
 
 	// Set Uniforms/Attributes
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
@@ -122,3 +121,85 @@ void ModelRenderer::drawModel(Model* model) {
 
 	glUseProgram(NULL);
 }
+
+void ModelRenderer::renderTerrain(Terrain* terrain)
+{
+	glUseProgram(programId);
+
+	glm::vec3 translation(glm::vec3(0, -50, 0)), rotation(glm::vec3(0, 0, 0)), scale(glm::vec3(100, 100, 100));
+	glm::mat4 modelMatrix(glm::mat4(1.0f));
+	modelMatrix = glm::rotate(modelMatrix, rotation.x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, rotation.y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, rotation.z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelMatrix = glm::translate(modelMatrix, translation);
+	modelMatrix = glm::scale(modelMatrix, scale);
+
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+
+	// Set Array data
+	glEnableVertexAttribArray(vertexPositionLocation);
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, terrain->getVBOLocation()));
+	GLCALL(glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0));
+
+	// UV buffer
+	glEnableVertexAttribArray(uvLocation);
+	GLCALL(glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, u)));
+
+	// Set texture
+	glActiveTexture(GL_TEXTURE0);
+	GLCALL(glUniform1i(textureSamplerLocation, 0));
+	GLCALL(glBindTexture(GL_TEXTURE_2D, terrain->getTexture()->getTextureId()));
+
+	// Set index buffer and draw with them
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrain->getIBOLocation()));
+	glDrawElements(GL_TRIANGLES, terrain->getIndexCount(), GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, NULL);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glDisableVertexAttribArray(vertexPositionLocation);
+	glUseProgram(NULL);
+}
+
+void ModelRenderer::renderSkyDome(SkyDome* skydome, float x)
+{
+	glUseProgram(programId);
+	glm::vec3 translation(glm::vec3(1.0f, 1.0f, 1.0f)), rotation(glm::vec3(0, 0, 0)), scale(glm::vec3(10, 10, 10));
+	glm::mat4 modelMatrix(glm::mat4(1.0f));
+
+	translation = camera->getPosition();
+	modelMatrix = glm::rotate(modelMatrix, rotation.x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, rotation.y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, rotation.z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelMatrix = glm::translate(modelMatrix, translation);
+	modelMatrix = glm::scale(modelMatrix, scale);
+
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+
+	// Set Array data
+	glEnableVertexAttribArray(vertexPositionLocation);
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, skydome->getVBOLocation()));
+	GLCALL(glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0));
+
+	// UV buffer
+	glEnableVertexAttribArray(uvLocation);
+	GLCALL(glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, u)));
+
+	// Set texture
+	glActiveTexture(GL_TEXTURE0);
+	GLCALL(glUniform1i(textureSamplerLocation, 0));
+	GLCALL(glBindTexture(GL_TEXTURE_2D, skydome->getTexture()->getTextureId()));
+
+	// Set index buffer and draw with them
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skydome->getIBOLocation()));
+	glDrawElements(GL_TRIANGLES, skydome->getIndexCount(), GL_UNSIGNED_INT, NULL);
+
+	glDisableVertexAttribArray(vertexPositionLocation);
+	glUseProgram(NULL);
+}
+
+

@@ -1,41 +1,43 @@
 #include "Texture.h"
-#include "Texture.h"
 
 
 Texture::Texture(std::string f)
 	: file(f)
 {
 	stbi_set_flip_vertically_on_load(1);
-	textureData = stbi_load(file.c_str(), &width, &height, &channels, 0);
-	dataType = GL_UNSIGNED_BYTE;
-	if (!textureData) {
-		throw std::runtime_error("[ERROR] Could not read image file!");
-	}
-	if (channels == 3) {
-		
-		imageFormat = GL_RGB8;
-		glImageFormat = GL_RGB;
-	}
-	else if (channels == 4) {
+	textureData = stbi_load(file.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
-		imageFormat = GL_RGBA8;
-		glImageFormat = GL_RGBA;
+	//SDL_Surface* image = IMG_Load(file.c_str());
+	//width = image->w;
+	//height = image->h;
+	//textureData = image->pixels;
+
+	//SDL_Surface* surface = IMG_Load(file.c_str());
+	//width = surface->w;
+	//height = surface->h;
+	//surface->
+
+
+	if (!textureData) {
+		std::cerr << "[ERROR] Could not read image file! File: " << file.c_str() << std::endl;
+		return;
 	}
-	else {
-		throw std::runtime_error("[ERROR] Could not read image file!");
-	}
+
+	//imageFormat = GL_RGB8;
+	//glImageFormat = GL_RGB;
+
 
 	setTextureData();
 	// Allocate texture in OpenGL
 	stbi_image_free(textureData);
 }
 
-Texture::Texture() 
+Texture::Texture(const int textureHeight, const int textureWidth)
 {
 	// Construct a white dummy texture.
-	const int newHeight = 1024;
-	const int newWidth = 1024;
-	const int newChannels = 4;
+	const unsigned int newHeight = textureHeight;
+	const unsigned int newWidth = textureWidth;
+	const unsigned int newChannels = 4;
 	width = newWidth;
 	height = newHeight;
 	channels = newChannels;
@@ -43,8 +45,7 @@ Texture::Texture()
 	glImageFormat = GL_RGBA;
 	// Create an empty char array
 	std::vector<unsigned char>* textureArray = new std::vector<unsigned char>();
-	textureArray->assign(newHeight * newWidth * newChannels, (unsigned char)255);
-	dataType = GL_UNSIGNED_BYTE;
+	textureArray->assign(((long int)newHeight * (long int)newWidth * (long int)newChannels), (unsigned char)180);
 	textureData = (void*)textureArray->data();
 	// Set white pixels to the GL Texture.
 	setTextureData();
@@ -54,11 +55,12 @@ Texture::Texture()
 
 void Texture::setTextureData()
 {
-	glGenTextures(1, &textureId);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Set how the texture should upscale
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  // downscale.
+	GLCALL(glGenTextures(1, &textureId));
+	GLCALL(glBindTexture(GL_TEXTURE_2D, textureId));
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, width, height, 0, glImageFormat, dataType, textureData);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)); // Set how the texture should upscale
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));  // and downscale.
+	GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData));
+
+	GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
 }

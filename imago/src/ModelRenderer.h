@@ -7,7 +7,10 @@
 
 #include "Camera.h"
 #include "Model.h"
+#include "Terrain.h"
 #include "Utils.h"
+#include "SkyDome.h"
+
 
 
 class ModelRenderer
@@ -18,7 +21,8 @@ public:
 	void init();
 	void clean();
 	void drawModel(Model* model);
-
+	void renderTerrain(Terrain* terrain);
+	void renderSkyDome(SkyDome* skydome, float x);
 
 private:
 	// Shader program info

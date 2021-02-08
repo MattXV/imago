@@ -64,18 +64,20 @@ Model::Model(std::string modelFile) :
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 		// UV Coordinates
 		if (hasUVCoords) {
-			printf("Loading texture coords associated with mesh! \n");
 			glGenBuffers(1, &uvo);
 			glBindBuffer(GL_ARRAY_BUFFER, uvo);
 			glBufferData(GL_ARRAY_BUFFER, uvMap.size() * sizeof(float), &uvMap[0], GL_STATIC_DRAW);
 			uvBufferObjects.push_back(uvo);
 		}
 
-
 		vertexBufferObjects.push_back(vbo);
 		indexBufferObjects.push_back(ibo);
 		indexCounts.push_back((int)indices.size());
 	}
+
+	// Create Vertex Array Object
+	glGenVertexArrays(1, &vertexArrayObject);
+	glBindVertexArray(vertexArrayObject);
 }
 
 Model::~Model()

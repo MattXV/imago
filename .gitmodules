@@ -4,3 +4,6 @@
 [submodule "imago/externals/opencv"]
 	path = imago/externals/opencv
 	url = https://github.com/opencv/opencv
+[submodule "imago/externals/pcl"]
+	path = imago/externals/pcl
+	url = https://github.com/PointCloudLibrary/pcl
