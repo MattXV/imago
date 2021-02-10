@@ -4,7 +4,7 @@ Camera::Camera(SDL_Window* window)
 	: window(window)
 {
 	float fov = 45.0f;
-	float aspectRatio = 640.0f / 480.0f;
+	float aspectRatio = (float)windowHeight / (float)windowWidth;
 	float near = 0.1f;
 	float far = 900.0f;
 

@@ -126,14 +126,9 @@ void ModelRenderer::renderTerrain(Terrain* terrain)
 {
 	glUseProgram(programId);
 
-	glm::vec3 translation(glm::vec3(0, -50, 0)), rotation(glm::vec3(0, 0, 0)), scale(glm::vec3(100, 100, 100));
-	glm::mat4 modelMatrix(glm::mat4(1.0f));
-	modelMatrix = glm::rotate(modelMatrix, rotation.x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
-	modelMatrix = glm::rotate(modelMatrix, rotation.y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
-	modelMatrix = glm::rotate(modelMatrix, rotation.z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelMatrix = glm::translate(modelMatrix, translation);
-	modelMatrix = glm::scale(modelMatrix, scale);
+	glm::vec3 translation(glm::vec3(0, -150, 0)), rotation(glm::vec3(0, 0, 0)), scale(glm::vec3(100, 100, 100));
 
+	glm::mat4 modelMatrix = RenderUtils::createModelMatrix(rotation, translation, scale);
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
@@ -169,7 +164,7 @@ void ModelRenderer::renderSkyDome(SkyDome* skydome, float x)
 	glm::vec3 translation(glm::vec3(1.0f, 1.0f, 1.0f)), rotation(glm::vec3(0, 0, 0)), scale(glm::vec3(10, 10, 10));
 	glm::mat4 modelMatrix(glm::mat4(1.0f));
 
-	translation = camera->getPosition();
+	//translation = camera->getPosition();
 	modelMatrix = glm::rotate(modelMatrix, rotation.x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
 	modelMatrix = glm::rotate(modelMatrix, rotation.y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
 	modelMatrix = glm::rotate(modelMatrix, rotation.z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -180,12 +175,11 @@ void ModelRenderer::renderSkyDome(SkyDome* skydome, float x)
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 
-	// Set Array data
+	// vertex data
 	glEnableVertexAttribArray(vertexPositionLocation);
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, skydome->getVBOLocation()));
 	GLCALL(glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0));
-
-	// UV buffer
+	// UV data
 	glEnableVertexAttribArray(uvLocation);
 	GLCALL(glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, u)));
 
@@ -198,6 +192,11 @@ void ModelRenderer::renderSkyDome(SkyDome* skydome, float x)
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skydome->getIBOLocation()));
 	glDrawElements(GL_TRIANGLES, skydome->getIndexCount(), GL_UNSIGNED_INT, NULL);
 
+
+
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
 	glDisableVertexAttribArray(vertexPositionLocation);
 	glUseProgram(NULL);
 }

@@ -4,8 +4,7 @@ GameLoop::GameLoop() :
 	glContext(),
 	window(nullptr),
 	modelRenderer(nullptr),
-	model(nullptr),
-	terrain(nullptr)
+	model(nullptr)
 {
 }
 
@@ -13,9 +12,9 @@ GameLoop::~GameLoop() {
 	delete camera;
 	delete modelRenderer;
 	delete model;
-	delete terrain;
-	delete skydome;
 	delete triangleRenderer;
+	
+	delete terrain;
 }
 
 void GameLoop::init() {
@@ -56,7 +55,7 @@ void GameLoop::init() {
 	if (SDL_GL_SetSwapInterval(1) < 0)
 		std::cout << "Vsync is not supported!" << std::endl;
 
-	// Initialise scene objects
+	// Scene objects
 	camera = new FPSCamera(window);
 	triangleRenderer = new TriangleRenderer(camera);
 	modelRenderer = new ModelRenderer(camera);
@@ -64,17 +63,11 @@ void GameLoop::init() {
 	modelRenderer->init();
 
 	texture = new Texture("resources/models/monkey.png");
-	model = new Model("resources/models/monkey.obj");
+	model = new Model("resources/models/PalmTree(Triangle).obj");
 	model->setTexture(texture);
-
-	terrainTexure = new Texture("resources/models/terrain/moon_texture.png");
-	terrain = new Terrain("resources/models/terrain/blurred.png", terrainTexure);
-
-	skydomeTexture = new Texture("resources/models/terrain/sky.png");
 	
-	skydome = new SkyDome(skydomeTexture, 15.0f, 16U);
-
-	Utils::glCheckError();
+	terrainTexture = new Texture("resources/models/terrain/terrain-texture.png");
+	terrain = new Terrain("resources/models/terrain/terrain-heightmap.png", terrainTexture);
 }
 
 bool GameLoop::handleInput() {
@@ -108,15 +101,10 @@ void GameLoop::draw() {
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	x += increment;
-	x = std::int8_t(x) % 360 ? 0.0f : x;
-
 	model->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-	model->setRotation(glm::vec3(0.0f, x, 0.0f));
-	//triangleRenderer->draw();
+	model->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 	modelRenderer->drawModel(model);
-	modelRenderer->renderTerrain(terrain);
-	modelRenderer->renderSkyDome(skydome, x);
+	//modelRenderer->renderTerrain(terrain);
 
 	SDL_GL_SwapWindow(window);
 }

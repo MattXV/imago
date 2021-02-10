@@ -4,6 +4,7 @@
 #include <vector>
 #include "Texture.h"
 #include "externals/stb_image/stb_image.h"
+#include "SDL_image.h"
 #include <glm/glm.hpp>
 #include "Utils.h"
 #include "RenderUtils.h"
@@ -22,7 +23,7 @@ public:
 	Texture* getTexture() { return texture; }
 
 private:
-	float tileScaling = 0.5f, tileSize = 4.0f;
+	float tileScaling = 0.3f, tileSize = 4.0f;
 	Texture* texture;
 	unsigned int vboLocation = 0, iboLocation = 0;
 	unsigned int indexCount = 0;

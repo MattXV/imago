@@ -18,7 +18,7 @@ public:
 
 
 private:
-	float multiplier = 0.3f;
+	float multiplier = 3.0f;
 	bool keyStates[4] = { false };
 	float yaw = 0.0f, pitch = 0.0f;
 	int oldMouseX = 0, oldMouseY = 0;

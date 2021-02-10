@@ -29,3 +29,16 @@ unsigned int RenderUtils::createIBO(std::vector<unsigned int>& indices) {
     return newBuffer;
 }
 
+glm::mat4 RenderUtils::createModelMatrix(glm::vec3& rotation, glm::vec3& translation, glm::vec3& scale)
+{
+    glm::mat4 modelMatrix(1.0f);
+
+    modelMatrix = glm::rotate(modelMatrix, rotation.x * 180.0f / pi, glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, rotation.y * 180.0f / pi, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, rotation.z * 180.0f / pi, glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMatrix = glm::translate(modelMatrix, translation);
+    modelMatrix = glm::scale(modelMatrix, scale);
+
+    return modelMatrix;
+}
+
