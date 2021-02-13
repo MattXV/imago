@@ -9,6 +9,7 @@
 #include <opencv2/opencv.hpp>
 #include <algorithm>
 #include "Utils.h"
+#include "RenderUtils.h"
 
 
 // TODO: Create default texture.
@@ -17,7 +18,7 @@ class Texture
 {
 public:
 	Texture(std::string file);
-	Texture(const int textureHeight = 1024, const int textureWidth = 1024);
+	Texture(const int textureHeight, const int textureWidth, Colour<unsigned char> colour);
 	virtual ~Texture() = default;
 
 	unsigned int getTextureId() { return textureId; }

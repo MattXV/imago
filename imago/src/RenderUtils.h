@@ -16,6 +16,16 @@ struct Vertex {
 	float x, y, z, u, v;
 };
 
+template<typename T>
+struct Colour {
+	Colour(T red, T green, T blue, T alpha) {
+		r = red;
+		g = green;
+		b = blue;
+		a = alpha;
+	}
+	T r, g, b, a;
+};
 
 namespace RenderUtils
 {

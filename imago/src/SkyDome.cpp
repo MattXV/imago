@@ -6,11 +6,11 @@ SkyDome::SkyDome(Texture* t, const float rad, const unsigned int res) :
 	, resolution(res)
 {
 	if (!texture)
-		texture = new Texture(resolution, resolution);
+		texture = new Texture(resolution, resolution, Colour<unsigned char>(255, 255, 255, 255));
 	
 	float constexpr pi = glm::pi<float>();
-	const float azimuthStep = (2.0f * pi) / (float)resolution;
-	const float elevationStep = pi / (float)resolution;
+	const float azimuthStep = (2.0f * pi) / (float)(resolution - 1);
+	const float elevationStep = pi / (float)(resolution - 1);
 
 	// Here a sphere is created using cartesian coordinates.
 	// With the resolution, the slices and sectors of the sphere are determined.
@@ -59,13 +59,13 @@ SkyDome::SkyDome(Texture* t, const float rad, const unsigned int res) :
 	//
 	std::vector<unsigned int> indices;
 	unsigned int c, n;
-	for (int latitude = 0; latitude < resolution; latitude++) {
+	for (int latitude = 0; latitude < resolution - 1; latitude++) {
 
 		c = latitude * (resolution + 1); // beginning of the current level
 		n = c + resolution + 1;		     //	beginning of the next level
 
 		//						Note that we're incrementing n and c too here!
-		for (int longitude = 0; longitude < resolution; longitude++, c++, n++) { 
+		for (int longitude = 0; longitude < resolution - 1; longitude++, c++, n++) { 
 			if (longitude != 0) {
 				indices.push_back(c);
 				indices.push_back(n);

@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/imago/Debug
+/imago/x64
+/x64/Debug
+/Debug
+/.vs/imago/v16

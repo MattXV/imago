@@ -70,9 +70,10 @@ void GameLoop::init() {
 	terrainTexure = new Texture("resources/models/terrain/moon_texture.png");
 	terrain = new Terrain("resources/models/terrain/blurred.png", terrainTexure);
 
-	skydomeTexture = new Texture("resources/models/terrain/sky.png");
+	//skydomeTexture = new Texture("resources/models/terrain/sky.png");
+	skydomeTexture = new Texture(1024, 1024, Colour<unsigned char>(0, 0, 0, 0));
 	
-	skydome = new SkyDome(skydomeTexture, 15.0f, 16U);
+	skydome = new SkyDome(skydomeTexture, 15.0f, 8U);
 
 	Utils::glCheckError();
 }
@@ -98,7 +99,7 @@ void GameLoop::update() {
 }
 
 void GameLoop::draw() {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -106,7 +107,7 @@ void GameLoop::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glEnable(GL_CULL_FACE);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	x += increment;
 	x = std::int8_t(x) % 360 ? 0.0f : x;
@@ -114,9 +115,10 @@ void GameLoop::draw() {
 	model->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 	model->setRotation(glm::vec3(0.0f, x, 0.0f));
 	//triangleRenderer->draw();
-	modelRenderer->drawModel(model);
-	modelRenderer->renderTerrain(terrain);
-	modelRenderer->renderSkyDome(skydome, x);
+	//modelRenderer->drawModel(model);
+	//modelRenderer->renderTerrain(terrain);
+	//modelRenderer->renderSkyDome(skydome, x);
+	modelRenderer->renderSkyDome(skydome, 0.0f);
 
 	SDL_GL_SwapWindow(window);
 }
